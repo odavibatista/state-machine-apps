@@ -1,6 +1,8 @@
 # 🧠 Teoria da Computação e Compiladores
 
-Projeto acadêmico desenvolvido durante a disciplina de **Teoria da Computação e Compiladores**, contendo simuladores interativos construídos em React para representar visualmente conceitos fundamentais da computação teórica, autômatos finitos e sistemas baseados em estados.
+![alt text](./public/docs/image-4.png)
+
+Projetos acadêmicos desenvolvidos durante a disciplina de **Teoria da Computação e Compiladores**, contendo simuladores interativos construídos em React para representar visualmente conceitos fundamentais da computação teórica, autômatos finitos e sistemas baseados em estados.
 
 ---
 
@@ -45,9 +47,9 @@ A lógica implementada pode ser modelada como um **Autômato Finito Determiníst
 
 ## Estrutura Lógica do Case 01
 
-A figura abaixo representa o diagrama de estados utilizado para modelar o funcionamento da máquina de doces.
+A figura abaixo mostra o estado inicial do sistema da Vending Machine, representando as possíveis transições e estados relacionados à inserção de dinheiro, seleção de produtos e finalização da compra:
 
-![Estrutura lógica da máquina de doces](./public/docs/image-1.png)
+![alt text](./public/docs/image-5.png)
 
 ---
 
