@@ -1,178 +1,343 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
 #vendingMachine {
-  background-color: #f0f8ff;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at top left, #dbeafe 0%, transparent 40%),
+    radial-gradient(circle at bottom right, #c7d2fe 0%, transparent 40%),
+    linear-gradient(135deg, #eef2ff 0%, #dbeafe 100%);
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  gap: 20px;
+
+  padding: 40px 20px;
+  gap: 32px;
+}
+
+#machineBody {
+  width: 100%;
+  max-width: 900px;
+
+  background: rgba(255, 255, 255, 0.75);
+
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,.5);
+
+  border-radius: 28px;
+
+  padding: 28px;
+
+  box-shadow:
+    0 30px 60px rgba(15, 23, 42, .15),
+    0 10px 20px rgba(15, 23, 42, .08);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.machineHeader {
+  text-align: center;
+}
+
+.machineHeader h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.machineHeader p {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
 #machineUpperPart {
   display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-#machineBody {
-  background-color: #adc5fc;
-  align-items: center;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 450px;
-  height: 600px;
-  padding: 20px;
-}
-
-#evacuation {
-  background-color: #000026;
-  height: 40px;
-  width: 100px;
-}
-
-#machineInstructions {
-  background-color: #00009e;
-  border-radius: 5px;
-  color: rgb(253, 253, 253);
-  font-family: "Courier New", Courier, monospace;
-  font-size: 20px;
-  font-weight: bold;
-  width: 105px;
-  height: 145px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0px 5px;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-#machineControls {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  gap: 25px;
-  margin-top: 20px;
-}
-
-#productOutput {
-  background-color: #fff;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  width: 100px;
-  height: 140px;
-  display: flex;
+  gap: 24px;
 }
 
 #machineGlass {
-  align-items: center;
-  background-color: rgba(104, 104, 104, 0.367);
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  flex-wrap: wrap;
+  flex: 1;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.85),
+      rgba(248,250,252,.55)
+    );
+
+  border: 1px solid #dbe4f0;
+
+  border-radius: 20px;
+
+  padding: 32px;
+
   display: flex;
-  gap: 40px;
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 65%;
-  height: 80%;
-  margin-left: 20px;
-  margin-top: 20px;
-  padding: 40px;
-  z-index: 1;
+  flex-direction: column;
+  gap: 38px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.8),
+    0 8px 20px rgba(0,0,0,.04);
+}
+
+.product {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#machineControls {
+  width: 250px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+#machineInstructions {
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+
+  color: white;
+
+  border-radius: 18px;
+
+  min-height: 110px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+
+  padding: 18px;
+
+  box-shadow:
+    0 12px 24px rgba(37,99,235,.25);
 }
 
 #buttonsArea {
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  align-items: center;
+  gap: 12px;
+}
+
+#balance {
+  background: #0f172a;
+
+  color: #22c55e;
+
+  border-radius: 16px;
+
+  padding: 18px;
+
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
   gap: 4px;
+
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .8px;
+
+  box-shadow:
+    inset 0 0 18px rgba(34,197,94,.15),
+    0 8px 20px rgba(15,23,42,.18);
+}
+
+#balance strong {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+#selectedProduct {
+  background: rgba(248,250,252,.95);
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 16px;
+
+  padding: 16px;
+
+  min-height: 95px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  color: #334155;
+
+  line-height: 1.5;
+}
+
+#selectedProduct p {
+  margin: 2px 0;
+}
+
+#selectedProduct strong {
+  color: #2563eb;
+}
+
+#extraction {
+  border: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      #22c55e,
+      #16a34a
+    );
+
+  color: white;
+
+  font-size: .95rem;
+  font-weight: 700;
+
+  padding: 16px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  transition: all .25s ease;
+
+  box-shadow:
+    0 10px 20px rgba(34,197,94,.25);
+}
+
+#extraction:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 14px 28px rgba(34,197,94,.35);
+}
+
+#evacuation {
+  height: 100px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #111827,
+      #020617
+    );
+
+  border-radius: 14px;
+
+  border: 1px solid rgba(255,255,255,.05);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 2px 10px rgba(0,0,0,.6);
+}
+
+#boughtProduct {
+  width: 85px;
+
+  animation: drop .5s ease;
+
+  cursor: pointer;
+
+  transition: transform .2s;
+}
+
+#boughtProduct:hover {
+  transform: scale(1.08);
 }
 
 #moneyBills {
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 30px;
 }
 
-#balance {
-  background-color: #003e0f;
-  font-size: 12px;
-  color: lime;
-  font-weight: bold;
-  width: 105px;
-  height: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0px 5px;
-}
-
-#extraction {
-  background-color: #94f039;
-  border: 2px solid black;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  padding: 5px;
-  transition: 0.3s;
-}
-
-#extraction:hover {
-  background-color: #ceff8d;
-}
-
-#selectedProduct {
-  background-color: #003e0f;
-  font-size: 12px;
-  color: lime;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-weight: bold;
-  width: 105px;
-  height: 65px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0px 5px;
-  text-align: center;
-}
-
-.text {
-  margin: 0;
-  padding: 0;
-}
-
-.product {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* Create an animation of the product dropping down from the machine */
-#boughtProduct {
-  cursor: pointer;
-  height: 90px;
-  width: 90px;
-  animation: drop 0.5s ease-in-out forwards;
-  transition: 0.3s;
-}
-
 @keyframes drop {
-  0% {
-    transform: translateY(-100%);
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
   }
-  100% {
+
+  to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  #machineUpperPart {
+    flex-direction: column;
+  }
+
+  #machineControls {
+    width: 100%;
+  }
+
+  #machineGlass {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .machineHeader h1 {
+    font-size: 2rem;
+  }
+
+  .machineHeader p {
+    font-size: .95rem;
+  }
+
+  #machineBody {
+    padding: 20px;
+  }
+
+  .product {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 500px) {
+  .machineHeader h1 {
+    font-size: 1.7rem;
+  }
+
+  #moneyBills {
+    gap: 16px;
+  }
+
+  #machineGlass {
+    gap: 24px;
   }
 }
