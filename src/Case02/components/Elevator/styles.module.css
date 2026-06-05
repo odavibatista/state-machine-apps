@@ -1,41 +1,146 @@
-#tudo   {
-    padding: 20px;
+.elevatorSimulator {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-#space{
-    float: left;
-    width:70%;
-    min-height:  calc(60vh);
-    display: flex;
+.elevatorBuilding {
+  width: 100%;
+  max-width: 1100px;
+
+  background: white;
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, .12),
+    0 4px 12px rgba(0, 0, 0, .08);
+}
+
+.buildingHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.buildingHeader h2 {
+  font-size: 2rem;
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 6px;
+}
+
+.buildingHeader p {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.simulatorContent {
+  display: flex;
+  gap: 24px;
+}
+
+.elevatorShaft {
+  position: relative;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(
+    180deg,
+    #1f2937,
+    #111827
+  );
+
+  border-radius: 18px;
+
+  padding: 12px;
+
+  overflow: hidden;
+}
+
+.controlPanel {
+  width: 320px;
+
+  background: #f8fafc;
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+
+  border: 1px solid #e5e7eb;
+}
+
+.panelTitle {
+  text-align: center;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.floorButtons {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 14px;
+
+  justify-items: center;
+}
+
+.doorButtons {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+}
+
+.statusPanel {
+  background: white;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  padding: 14px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.statusPanel span {
+  font-size: .85rem;
+
+  color: #6b7280;
+}
+
+.statusPanel strong {
+  font-size: 1rem;
+
+  color: #111827;
+}
+
+@media (max-width: 900px) {
+  .simulatorContent {
     flex-direction: column;
-    justify-content: end;
-    align-items: center;
-    z-index: -1;
-}
+  }
 
-#controller{
-    padding:  10% 0px 10% 0px;
-    min-height:  calc(60vh);
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    background-color: rgb(207, 207, 207);
-}
-
-
-#predio{
-    background-color: rgb(51, 44, 44);
-    border: 2px solid black;
-    display: flex;
-    flex-direction: column;
-    /*margin-bottom: 40px;*/
-    z-index: 1;
-    padding: 10px;
-    /*background-image: url("../../../public/7.png");*/
-    background-size: 100% 110%;
-    background-repeat: no-repeat;
-}
-
-#chao{
-    height: 200px;
+  .controlPanel {
+    width: 100%;
+  }
 }

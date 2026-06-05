@@ -1,17 +1,32 @@
 import React from "react";
 import styles from "./styles.module.css";
 
-interface CabinProps {
-    top: any;
-    p: number;
-  }
+interface ElevatorCabinProps {
+  top: number;
+  doorWidth: number;
+}
 
-const Cabin: React.FC<CabinProps> = ({ top, p }) => {
-    return (
-        <div id={styles.cabin} style={{ top }}>
-        <div id={styles.door} style={{ width: p }}></div>
+const ElevatorCabin: React.FC<ElevatorCabinProps> = ({
+  top,
+  doorWidth,
+}) => {
+  return (
+    <div
+      className={styles.cabin}
+      style={{ top: `${top}px` }}
+    >
+      <div className={styles.cabinHeader}>
+        <span>ELEVADOR</span>
       </div>
-    );
-  };
-  
-  export default Cabin;
+
+      <div className={styles.cabinBody}>
+        <div
+          className={styles.cabinDoor}
+          style={{ width: `${doorWidth}%` }}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ElevatorCabin;

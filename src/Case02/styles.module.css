@@ -2,7 +2,9 @@
   background-color: #f0f8ff;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 100vh;
+  min-height: 92vh;
+  padding: 20px 0 28px;
+  gap: 20px;
 }

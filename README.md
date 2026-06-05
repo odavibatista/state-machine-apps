@@ -1,59 +1,205 @@
+# 🧠 Teoria da Computação e Compiladores
+
+Projeto acadêmico desenvolvido durante a disciplina de **Teoria da Computação e Compiladores**, contendo simuladores interativos construídos em React para representar visualmente conceitos fundamentais da computação teórica, autômatos finitos e sistemas baseados em estados.
+
+---
+
 # 📖 Índice
-- [Case 01 - Vending Machine](#vending-machine)
-- [Case 02 - Elevador](#elevator)
-- [Membros do Grupo](#members)
 
-## Sobre
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Case 01 - Máquina de Doces](#vending-machine)
+- [Case 02 - Simulador de Elevador](#elevator)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Membros do Projeto](#members)
 
-Este repositório contém um front-end contendo várias sub-aplicações desenvolvidas para diversos cases feitos durante o semestre da disciplina de Teoria da Computação e Compiladores, de modo a representar sistemicamente o funcionamento de autômatos e outros conceitos de computação em baixo nível.
+---
 
+## Sobre o Projeto
 
-## Case 01: React Vending Machine <a name="vending-machine"></a>
+Este repositório reúne aplicações front-end desenvolvidas ao longo do semestre da disciplina de **Teoria da Computação e Compiladores**, com o objetivo de representar, de forma visual e interativa, conceitos clássicos da computação teórica.
 
-Neste projeto, se construiu um pequenino sistema front-end que simula a lógica computacional de uma máquina de doces, que recebe cédulas monetárias, gerencia a sua quantidade em tempo real através de gerenciamento de estado e que possui desdobramentos lógicos com base nas decisões do usuário no uso da mesma.
+Os sistemas simulam comportamentos baseados em **máquinas de estados**, **autômatos finitos determinísticos**, controle de fluxo e persistência de estado, permitindo observar na prática como determinadas regras de transição influenciam o comportamento de um sistema.
 
-Nisto, simula-se o comportamento de um autômato, que observa em tempo real a síntaxe das linhas de código inputadas em um arquivo, e que reconhece se as mesmas são ou não pertencentes à linguagem com que se está sendo trabalhada.
+Além do caráter acadêmico, o projeto também serviu como exercício de desenvolvimento front-end utilizando React e gerenciamento de estados.
 
-Deste modo, o autômato dá-se ao trabalho de permitir que somente se compile aquilo que componha a linguagem e de impedir que instruções erradas sejam compiladas na execução das instruções.
+---
 
+# 🥤 Case 01: React Vending Machine <a name="vending-machine"></a>
 
-### Estrutura Lógica do Case 01
+## Descrição
 
-A figura abaixo representa o esquema lógico do autômato da máquina de doces, contendo os casos para as possíveis ações inputadas nesse sistema: 
+Este case consiste na implementação de uma máquina automática de vendas (Vending Machine), capaz de simular o processo completo de compra de produtos através da inserção de crédito e seleção de itens.
 
-![alt text](image-1.png)
+O sistema gerencia internamente o estado da aplicação, controlando:
 
-Tais ações incluem:
-- A recepção das cédulas de R$1.00, R$2.00 e R$5.00;
-- O valor do crédito sendo acrescido conforme a adição das cédulas;
-- A dedução do crédito mediante a compra de algum dos três produtos;
-- A devolução do troco (se houver) do cliente através da dedução do preço do produto do valor total em crédito;
-- As operações de resultado negativo, isto é, que tragam como consequência uma resposta negativa do sistema, de incapacidade de obtenção do produto.
+- Inserção de dinheiro;
+- Atualização do saldo disponível;
+- Seleção de produtos;
+- Validação de saldo;
+- Liberação do produto;
+- Cálculo e devolução de troco.
 
+A lógica implementada pode ser modelada como um **Autômato Finito Determinístico (AFD)**, onde cada ação do usuário representa uma transição entre estados previamente definidos.
 
-### Mockup da aplicação front-end
+---
 
-O desenho abaixo representa a estrutura aproximada da aparência do front-end:
+## Estrutura Lógica do Case 01
 
-![alt text](image.png)
+A figura abaixo representa o diagrama de estados utilizado para modelar o funcionamento da máquina de doces.
 
-## Case 02: Elevador <a name="elevator"></a>
+![Estrutura lógica da máquina de doces](image-1.png)
 
-Neste projeto, construiu-se um pequeno sistema para simular o funcionamento de um elevador em quatro andares, sendo um deles o térreo. Nesse sistema, há a necessidade do uso de memória para a guarda do estado atual e passado. Durante o percurso, o elevador poderá estar em diversos andares, tendo sempre que passar por um para chegar até o outro, e suas portas poderão estar sob os estados "ABERTAS" e "FECHADAS". O elevador somente é capaz de se movimentar com suas portas estando fechadas, de modo que é obrigatório que o sistema possua uma trava de segurança em suas tratativas para impedir que o elevador possa transitar de andar com elas abertas.
+---
 
-![alt text](image-2.png)
+### Operações Simuladas
 
-### Estrutura Lógica do Case 02
+O sistema contempla:
 
-A figura a seguir mostra a estrutura lógica do autômato utilizado como base para este case. Suas operações contemplam os estados em cada um dos andares, e as operações extras como a abertura e o fechamento das portas do elevador.
+- Recepção de cédulas de R$1,00;
+- Recepção de cédulas de R$2,00;
+- Recepção de cédulas de R$5,00;
+- Acúmulo de crédito em tempo real;
+- Seleção de produtos;
+- Compra mediante saldo suficiente;
+- Cálculo automático de troco;
+- Tratamento de operações inválidas;
+- Bloqueio de compras sem saldo suficiente.
 
-![alt text](image-3.png)
+---
 
+## Mockup Inicial
 
-## Membros do Projeto <a name="members"></a>
-- [Davi Batista (RA: 823212382)](https://github.com/odavibatista)
-- [Rômulo Mendes (822161394)](https://github.com/Romulomrs)
-- [Silas Rodrigues (82327338)](https://github.com/SilasNR)
-- Mateus Idibal (824218817)
-- Gabriel Argoso (82413799)
-- Caique Andrade (823121611)
+A figura abaixo representa o desenho conceitual originalmente utilizado para o desenvolvimento da interface.
+
+![Mockup da máquina de doces](image.png)
+
+---
+
+# 🛗 Case 02: Simulador de Elevador <a name="elevator"></a>
+
+## Descrição
+
+Este case consiste na implementação de um simulador de elevador operando em um edifício de quatro andares:
+
+- Térreo (T)
+- 1º Andar
+- 2º Andar
+- 3º Andar
+
+O objetivo é reproduzir o comportamento de um elevador real utilizando conceitos de estados, transições e memória.
+
+Durante a execução, o sistema precisa armazenar informações como:
+
+- Andar atual;
+- Destino selecionado;
+- Estado da porta;
+- Estado operacional do elevador.
+
+O simulador implementa regras de segurança que impedem movimentações indevidas, como deslocamentos com as portas abertas.
+
+---
+
+## Funcionamento Geral
+
+Entre as operações disponíveis estão:
+
+- Seleção de andares;
+- Abertura de portas;
+- Fechamento de portas;
+- Movimentação vertical da cabine;
+- Atualização automática do estado do elevador.
+
+---
+
+## Representação Visual
+
+A imagem abaixo representa a estrutura conceitual utilizada para a modelagem do sistema.
+
+![Representação do elevador](image-2.png)
+
+---
+
+## Estrutura Lógica do Case 02
+
+A figura abaixo apresenta o diagrama de estados utilizado como base para a implementação do simulador.
+
+![Estrutura lógica do elevador](image-3.png)
+
+O modelo contempla:
+
+- Estados correspondentes aos andares;
+- Estados de porta aberta;
+- Estados de porta fechada;
+- Restrições de movimentação;
+- Transições condicionadas ao contexto atual.
+
+---
+
+# 🚀 Tecnologias Utilizadas
+
+## Front-end
+
+- React
+- TypeScript
+- CSS Modules
+- React Hooks
+
+## Conceitos Acadêmicos
+
+- Autômatos Finitos Determinísticos (AFD)
+- Máquinas de Estados
+- Transições de Estado
+- Persistência de Estado
+- Sistemas Reativos
+- Modelagem Computacional
+
+---
+
+# 👥 Membros do Projeto <a name="members"></a>
+
+### Davi Batista
+GitHub: https://github.com/odavibatista
+
+RA: 823212382
+
+---
+
+### Rômulo Mendes
+GitHub: https://github.com/Romulomrs
+
+RA: 822161394
+
+---
+
+### Silas Rodrigues
+GitHub: https://github.com/SilasNR
+
+RA: 82327338
+
+---
+
+### Mateus Idibal
+
+RA: 824218817
+
+---
+
+### Gabriel Argoso
+
+RA: 82413799
+
+---
+
+### Caique Andrade
+
+RA: 823121611
+
+---
+
+# 📚 Contexto Acadêmico
+
+Projeto desenvolvido para a disciplina de **Teoria da Computação e Compiladores**, com foco na aplicação prática de conceitos formais da computação através da construção de simuladores interativos.
+
+O objetivo principal foi transformar modelos teóricos em sistemas visuais capazes de demonstrar o comportamento de autômatos e máquinas de estados em cenários reais.
+
+---

@@ -1,20 +1,87 @@
-#cabin{
-    background-color: gray;
-    width: 105px;
-    height: 95px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: end;
-    transition: 0.5s;
-    z-index: -1;
-    left: 31px;
+.cabin {
+  position: absolute;
+  left: 32px;
+
+  width: 120px;
+  height: 120px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  border: 2px solid #6b7280;
+
+  background: linear-gradient(
+    180deg,
+    #d1d5db,
+    #9ca3af
+  );
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  transition:
+    top 0.8s ease-in-out,
+    transform 0.3s ease;
 }
 
-#door{
-    width: 50px;
-    height: 100%;
-    background-color:rgb(229, 255, 0);
-    transition: 0.5s;
+.cabin:hover {
+  transform: scale(1.02);
+}
+
+.cabinHeader {
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+    135deg,
+    #111827,
+    #1f2937
+  );
+
+  color: white;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.cabinBody {
+  flex: 1;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background: linear-gradient(
+    180deg,
+    #e5e7eb,
+    #d1d5db
+  );
+
+  padding: 6px;
+}
+
+.cabinDoor {
+  height: 100%;
+
+  background: linear-gradient(
+    180deg,
+    #facc15,
+    #eab308
+  );
+
+  border-radius: 6px;
+
+  border: 2px solid #ca8a04;
+
+  transition: width 0.5s ease;
 }

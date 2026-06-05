@@ -1,18 +1,28 @@
 .button {
   border: none;
-  border-radius: 5px;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: white;
   cursor: pointer;
-  margin: 10px;
-  padding: 15px 30px;
+  margin: 0;
+  min-height: 56px;
+  padding: 15px 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   transition:
     0.3s,
     transform 0.3s;
-  width: 100%;
 }
 
 .button:hover {
   transform: scale(1.05);
   transition: transform 0.4s;
+}
+
+.icon {
+  font-size: 1.05rem;
+  line-height: 1;
 }

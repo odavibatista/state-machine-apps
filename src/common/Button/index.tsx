@@ -6,6 +6,7 @@ export interface IButtonProps {
   link: string;
   color: string;
   text: string;
+  icon?: string;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }
@@ -14,6 +15,7 @@ const Button: React.FC<IButtonProps> = ({
   text,
   link,
   color,
+  icon,
   onMouseEnter,
   onMouseLeave,
 }) => {
@@ -24,9 +26,11 @@ const Button: React.FC<IButtonProps> = ({
         style={{
           backgroundColor: color,
         }}
-        onMouseEnter={() => onMouseEnter}
-        onMouseLeave={() => onMouseLeave}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        type="button"
       >
+        {icon ? <span className={styles.icon}>{icon}</span> : null}
         {text}
       </button>
     </Link>

@@ -1,14 +1,27 @@
 import React from "react";
 import styles from "./styles.module.css";
 
-interface FloorProps {
-    id: string;
-  }
+interface ElevatorFloorProps {
+  label: string;
+}
 
-const Floor: React.FC<FloorProps> = ({ id }) => {
-    return (
-        <div id={styles[id]} className={styles.floor}></div>
-    );
-  };
-  
-  export default Floor;
+const ElevatorFloor: React.FC<ElevatorFloorProps> = ({ label }) => {
+  const floorName =
+    label === "T"
+      ? "Térreo"
+      : `${label}º Andar`;
+
+  return (
+    <div className={styles.floor}>
+      <div className={styles.floorLine} />
+
+      <div className={styles.floorInfo}>
+        <span className={styles.floorLabel}>
+          {floorName}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default ElevatorFloor;

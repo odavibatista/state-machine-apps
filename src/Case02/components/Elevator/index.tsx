@@ -1,152 +1,331 @@
-import styles from './styles.module.css'
+import styles from "./styles.module.css";
 import { useState } from "react";
+
 import ElevatorButton from "../ElevatorButton";
 import Floor from "../Floor";
 import Cabin from "../Cabin";
 
 function Elevador() {
-  let esperaBasica = 500;
+  const TRAVEL_TIME = 500;
+  const DOOR_TIME = 500;
+  const FLOOR_HEIGHT = 150;
+  const CABIN_HEIGHT = 120;
+  const SHAFT_PADDING = 12;
 
-  let andar3 = 132;
-  let andar2 = 291;
-  let andar1 = 451;
-  let andar0 = 611;
+  function getFloorPosition(
+    targetFloor: number
+  ) {
+    const floorIndexFromTop = 3 - targetFloor;
 
-  function resolveAfter2Seconds(x: number) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(x);
-      }, x);
-    });
+    return (
+      SHAFT_PADDING +
+      floorIndexFromTop * FLOOR_HEIGHT +
+      (FLOOR_HEIGHT - CABIN_HEIGHT)
+    );
   }
 
-  const [operation, setOperation] = useState(true);
   const [currentFloor, setCurrentFloor] = useState(0);
-  const [positionY, setPositionY] = useState(andar0);
 
-  let porta = false;
-  const [p, setP] = useState(100);
+  const [positionY, setPositionY] = useState(
+    getFloorPosition(0)
+  );
 
-  async function mudarAdar(atual: number) {
-    switch (atual) {
-      case 0:
-        if (atual != currentFloor) {
-          setPositionY(andar0);
-          await resolveAfter2Seconds(esperaBasica);
-          abrirPorta();
-        }
-        setCurrentFloor(atual)
-        setOperation(true)
+  const [doorOpen, setDoorOpen] =
+    useState(true);
 
-        break;
-      case 1:
-        if (atual != currentFloor) {
-          setPositionY(andar1);
-          await resolveAfter2Seconds(esperaBasica);
-          abrirPorta();
-        }
-        setCurrentFloor(atual)
-        setOperation(true)
+  const [doorWidth, setDoorWidth] =
+    useState(100);
 
-        break;
-      case 2:
-        if (atual != currentFloor) {
-          setPositionY(andar2);
-          await resolveAfter2Seconds(esperaBasica);
-          abrirPorta();
-        }
-        setCurrentFloor(atual)
-        setOperation(true)
+  const [isBusy, setIsBusy] =
+    useState(false);
 
-        break;
-      case 3:
-        if (atual != currentFloor) {
-          setPositionY(andar3);
-          await resolveAfter2Seconds(esperaBasica);
-          abrirPorta();
-        }
-        setCurrentFloor(atual)
-        setOperation(true)
+  const [elevatorState, setElevatorState] =
+    useState("AGUARDANDO COMANDO");
 
-        break;
-
-      default:
-        break;
-    }
+  function wait(ms: number) {
+    return new Promise((resolve) =>
+      setTimeout(resolve, ms)
+    );
   }
 
-  // @ts-ignore
-  let realy = false
+  /**
+   * Ações internas do elevador
+   */
+  async function forceOpenDoor() {
+    setElevatorState("ABRINDO PORTA");
 
-  async function changePosition(selecionado: number) {
-    realy = true;
+    setDoorWidth(100);
 
-      if (porta) {
-        if (selecionado > currentFloor) {
-          mudarAdar(selecionado);
-          realy = false;
+    await wait(DOOR_TIME);
 
+    setDoorOpen(true);
+  }
 
-        } else if (selecionado < currentFloor) {
-          mudarAdar(selecionado);
-          realy = false;
-        } 
+  async function forceCloseDoor() {
+    setElevatorState("FECHANDO PORTA");
+
+    setDoorWidth(0);
+
+    await wait(DOOR_TIME);
+
+    setDoorOpen(false);
+  }
+
+  /**
+   * Ações manuais do usuário
+   */
+  async function openDoor() {
+    if (doorOpen) {
+      setElevatorState("PORTA JÁ ABERTA");
+      return;
+    }
+
+    await forceOpenDoor();
+  }
+
+  async function closeDoor() {
+    if (!doorOpen) {
+      setElevatorState("PORTA JÁ FECHADA");
+      return;
+    }
+
+    await forceCloseDoor();
+  }
+
+  async function moveToFloor(
+    targetFloor: number
+  ) {
+    if (targetFloor === currentFloor) {
+      if (!doorOpen) {
+        await forceOpenDoor();
       }
+
+      setElevatorState(
+        "ANDAR ATUAL SELECIONADO"
+      );
+
+      return;
+    }
+
+    setElevatorState(
+      targetFloor > currentFloor
+        ? "SUBINDO"
+        : "DESCENDO"
+    );
+
+    setPositionY(
+      getFloorPosition(targetFloor)
+    );
+
+    await wait(TRAVEL_TIME);
+
+    setCurrentFloor(targetFloor);
+
+    /**
+     * Abre automaticamente ao chegar
+     */
+    await forceOpenDoor();
+
+    setElevatorState(
+      "AGUARDANDO COMANDO"
+    );
   }
 
-  async function fecharPorta( selecionado : number) {
-    if (!porta) {
-      setOperation(false)
-      setP(0);
-      await resolveAfter2Seconds(500);
-      porta =true;
-      setOperation(true);
-      changePosition(selecionado);
-    }
-  }
-  async function fecharPort() {
-    if (operation) {
-      setOperation(false)
-      setP(0);
-      await resolveAfter2Seconds(500);
-      porta =true;
-      setOperation(true);
+  async function handleFloorSelection(
+    selectedFloor: number
+  ) {
+    if (isBusy) return;
+
+    setIsBusy(true);
+
+    try {
+      if (
+        selectedFloor !== currentFloor &&
+        doorOpen
+      ) {
+        await forceCloseDoor();
+      }
+
+      await moveToFloor(
+        selectedFloor
+      );
+    } finally {
+      setIsBusy(false);
     }
   }
 
-  async function abrirPorta() {
-    setOperation(false)
-    setP(100);
-    await resolveAfter2Seconds(esperaBasica);
-    porta = false;
-    setOperation(true);
+  async function handleOpenDoor() {
+    if (isBusy) return;
+
+    setIsBusy(true);
+
+    try {
+      await openDoor();
+    } finally {
+      setIsBusy(false);
+    }
+  }
+
+  async function handleCloseDoor() {
+    if (isBusy) return;
+
+    setIsBusy(true);
+
+    try {
+      await closeDoor();
+    } finally {
+      setIsBusy(false);
+    }
   }
 
   return (
-      <div id={styles.tudo}>
-        <div id={styles.space}>
-          <div id={styles.predio}>
-            <Cabin p={p} top={positionY} />
-            <div>
-              <Floor id="f3" />
-              <Floor id="f2" />
-              <Floor id="f1" />
-              <Floor id="T" />
+    <div className={styles.elevatorSimulator}>
+      <div className={styles.elevatorBuilding}>
+        <div className={styles.buildingHeader}>
+          <h2>
+            Simulador de Elevador
+          </h2>
+
+          <p>
+            Autômato Finito
+            Determinístico
+          </p>
+        </div>
+
+        <div
+          className={
+            styles.simulatorContent
+          }
+        >
+          <div
+            className={
+              styles.elevatorShaft
+            }
+          >
+            <Cabin
+              doorWidth={doorWidth}
+              top={positionY}
+            />
+
+            <Floor label="3" />
+            <Floor label="2" />
+            <Floor label="1" />
+            <Floor label="T" />
+          </div>
+
+          <div
+            className={
+              styles.controlPanel
+            }
+          >
+            <div
+              className={
+                styles.panelTitle
+              }
+            >
+              Painel de Controle
+            </div>
+
+            <div
+              className={
+                styles.floorButtons
+              }
+            >
+              <ElevatorButton
+                value="3"
+                onClick={() =>
+                  handleFloorSelection(3)
+                }
+              />
+
+              <ElevatorButton
+                value="2"
+                onClick={() =>
+                  handleFloorSelection(2)
+                }
+              />
+
+              <ElevatorButton
+                value="1"
+                onClick={() =>
+                  handleFloorSelection(1)
+                }
+              />
+
+              <ElevatorButton
+                value="T"
+                onClick={() =>
+                  handleFloorSelection(0)
+                }
+              />
+            </div>
+
+            <div
+              className={
+                styles.doorButtons
+              }
+            >
+              <ElevatorButton
+                value="<|>"
+                onClick={
+                  handleOpenDoor
+                }
+              />
+
+              <ElevatorButton
+                value=">|<"
+                onClick={
+                  handleCloseDoor
+                }
+              />
+            </div>
+
+            <div
+              className={
+                styles.statusPanel
+              }
+            >
+              <span>
+                Andar Atual
+              </span>
+
+              <strong>
+                {currentFloor === 0
+                  ? "Térreo"
+                  : `${currentFloor}º`}
+              </strong>
+            </div>
+
+            <div
+              className={
+                styles.statusPanel
+              }
+            >
+              <span>Porta</span>
+
+              <strong>
+                {doorOpen
+                  ? "ABERTA"
+                  : "FECHADA"}
+              </strong>
+            </div>
+
+            <div
+              className={
+                styles.statusPanel
+              }
+            >
+              <span>Estado</span>
+
+              <strong>
+                {elevatorState}
+              </strong>
             </div>
           </div>
-          <div id={styles.chao}></div>
-        </div>
-        <div id={styles.controller}>
-          <ElevatorButton value="3" onClick={() =>  fecharPorta(3) } />
-          <ElevatorButton value="2" onClick={() =>  fecharPorta(2) } />
-          <ElevatorButton value="1" onClick={() =>  fecharPorta(1) } />
-          <ElevatorButton value="T" onClick={() =>  fecharPorta(0) } />
-          <ElevatorButton value="<|>" onClick={() =>  abrirPorta() } />
-          <ElevatorButton value=">|<" onClick={() =>  fecharPort() } />
         </div>
       </div>
-  )
+    </div>
+  );
 }
 
-
-export default Elevador
+export default Elevador;
