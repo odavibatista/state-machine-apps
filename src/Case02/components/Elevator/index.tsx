@@ -4,10 +4,12 @@ import { useState } from "react";
 import ElevatorButton from "../ElevatorButton";
 import Floor from "../Floor";
 import Cabin from "../Cabin";
+import Popup from "../../../common/Popup";
 
 function Elevador() {
   const TRAVEL_TIME = 500;
   const DOOR_TIME = 500;
+
   const FLOOR_HEIGHT = 150;
   const CABIN_HEIGHT = 120;
   const SHAFT_PADDING = 12;
@@ -15,20 +17,23 @@ function Elevador() {
   function getFloorPosition(
     targetFloor: number
   ) {
-    const floorIndexFromTop = 3 - targetFloor;
+    const floorIndexFromTop =
+      3 - targetFloor;
 
     return (
       SHAFT_PADDING +
-      floorIndexFromTop * FLOOR_HEIGHT +
-      (FLOOR_HEIGHT - CABIN_HEIGHT)
+      floorIndexFromTop *
+        FLOOR_HEIGHT +
+      (FLOOR_HEIGHT -
+        CABIN_HEIGHT)
     );
   }
 
-  const [currentFloor, setCurrentFloor] = useState(0);
+  const [currentFloor, setCurrentFloor] =
+    useState(0);
 
-  const [positionY, setPositionY] = useState(
-    getFloorPosition(0)
-  );
+  const [positionY, setPositionY] =
+    useState(getFloorPosition(0));
 
   const [doorOpen, setDoorOpen] =
     useState(true);
@@ -40,7 +45,27 @@ function Elevador() {
     useState(false);
 
   const [elevatorState, setElevatorState] =
-    useState("AGUARDANDO COMANDO");
+    useState(
+      "AGUARDANDO COMANDO"
+    );
+
+  const [popupOpen, setPopupOpen] =
+    useState(false);
+
+  const [popupTitle, setPopupTitle] =
+    useState("");
+
+  const [popupMessage, setPopupMessage] =
+    useState("");
+
+  function showError(
+    title: string,
+    message: string
+  ) {
+    setPopupTitle(title);
+    setPopupMessage(message);
+    setPopupOpen(true);
+  }
 
   function wait(ms: number) {
     return new Promise((resolve) =>
@@ -49,10 +74,12 @@ function Elevador() {
   }
 
   /**
-   * Ações internas do elevador
+   * Operações internas
    */
   async function forceOpenDoor() {
-    setElevatorState("ABRINDO PORTA");
+    setElevatorState(
+      "ABRINDO PORTA"
+    );
 
     setDoorWidth(100);
 
@@ -62,7 +89,9 @@ function Elevador() {
   }
 
   async function forceCloseDoor() {
-    setElevatorState("FECHANDO PORTA");
+    setElevatorState(
+      "FECHANDO PORTA"
+    );
 
     setDoorWidth(0);
 
@@ -72,41 +101,43 @@ function Elevador() {
   }
 
   /**
-   * Ações manuais do usuário
+   * Operações manuais
    */
   async function openDoor() {
     if (doorOpen) {
-      setElevatorState("PORTA JÁ ABERTA");
+      showError(
+        "Porta já aberta",
+        "A porta do elevador já está aberta."
+      );
       return;
     }
 
     await forceOpenDoor();
+
+    setElevatorState(
+      "AGUARDANDO COMANDO"
+    );
   }
 
   async function closeDoor() {
     if (!doorOpen) {
-      setElevatorState("PORTA JÁ FECHADA");
+      showError(
+        "Porta já fechada",
+        "A porta do elevador já está fechada."
+      );
       return;
     }
 
     await forceCloseDoor();
+
+    setElevatorState(
+      "AGUARDANDO COMANDO"
+    );
   }
 
   async function moveToFloor(
     targetFloor: number
   ) {
-    if (targetFloor === currentFloor) {
-      if (!doorOpen) {
-        await forceOpenDoor();
-      }
-
-      setElevatorState(
-        "ANDAR ATUAL SELECIONADO"
-      );
-
-      return;
-    }
-
     setElevatorState(
       targetFloor > currentFloor
         ? "SUBINDO"
@@ -114,16 +145,17 @@ function Elevador() {
     );
 
     setPositionY(
-      getFloorPosition(targetFloor)
+      getFloorPosition(
+        targetFloor
+      )
     );
 
     await wait(TRAVEL_TIME);
 
-    setCurrentFloor(targetFloor);
+    setCurrentFloor(
+      targetFloor
+    );
 
-    /**
-     * Abre automaticamente ao chegar
-     */
     await forceOpenDoor();
 
     setElevatorState(
@@ -134,15 +166,34 @@ function Elevador() {
   async function handleFloorSelection(
     selectedFloor: number
   ) {
-    if (isBusy) return;
+    if (isBusy) {
+      showError(
+        "Elevador ocupado",
+        "Aguarde a conclusão da operação atual."
+      );
+      return;
+    }
+
+    if (
+      selectedFloor ===
+      currentFloor
+    ) {
+      showError(
+        "Andar atual",
+        `O elevador já está no ${
+          currentFloor === 0
+            ? "Térreo"
+            : `${currentFloor}º andar`
+        }.`
+      );
+
+      return;
+    }
 
     setIsBusy(true);
 
     try {
-      if (
-        selectedFloor !== currentFloor &&
-        doorOpen
-      ) {
+      if (doorOpen) {
         await forceCloseDoor();
       }
 
@@ -155,7 +206,13 @@ function Elevador() {
   }
 
   async function handleOpenDoor() {
-    if (isBusy) return;
+    if (isBusy) {
+      showError(
+        "Elevador ocupado",
+        "Não é possível abrir a porta durante uma movimentação."
+      );
+      return;
+    }
 
     setIsBusy(true);
 
@@ -167,7 +224,13 @@ function Elevador() {
   }
 
   async function handleCloseDoor() {
-    if (isBusy) return;
+    if (isBusy) {
+      showError(
+        "Elevador ocupado",
+        "Não é possível fechar a porta durante uma movimentação."
+      );
+      return;
+    }
 
     setIsBusy(true);
 
@@ -179,152 +242,185 @@ function Elevador() {
   }
 
   return (
-    <div className={styles.elevatorSimulator}>
-      <div className={styles.elevatorBuilding}>
-        <div className={styles.buildingHeader}>
-          <h2>
-            Simulador de Elevador
-          </h2>
+    <>
+      <Popup
+        isOpen={popupOpen}
+        title={popupTitle}
+        message={popupMessage}
+        onClose={() =>
+          setPopupOpen(false)
+        }
+      />
 
-          <p>
-            Autômato Finito
-            Determinístico
-          </p>
-        </div>
-
+      <div
+        className={
+          styles.elevatorSimulator
+        }
+      >
         <div
           className={
-            styles.simulatorContent
+            styles.elevatorBuilding
           }
         >
           <div
             className={
-              styles.elevatorShaft
+              styles.buildingHeader
             }
           >
-            <Cabin
-              doorWidth={doorWidth}
-              top={positionY}
-            />
+            <h2>
+              Simulador de Elevador
+            </h2>
 
-            <Floor label="3" />
-            <Floor label="2" />
-            <Floor label="1" />
-            <Floor label="T" />
+            <p>
+              Autômato Finito
+              Determinístico
+            </p>
           </div>
 
           <div
             className={
-              styles.controlPanel
+              styles.simulatorContent
             }
           >
             <div
               className={
-                styles.panelTitle
+                styles.elevatorShaft
               }
             >
-              Painel de Controle
+              <Cabin
+                doorWidth={
+                  doorWidth
+                }
+                top={positionY}
+              />
+
+              <Floor label="3" />
+              <Floor label="2" />
+              <Floor label="1" />
+              <Floor label="T" />
             </div>
 
             <div
               className={
-                styles.floorButtons
+                styles.controlPanel
               }
             >
-              <ElevatorButton
-                value="3"
-                onClick={() =>
-                  handleFloorSelection(3)
+              <div
+                className={
+                  styles.panelTitle
                 }
-              />
+              >
+                Painel de Controle
+              </div>
 
-              <ElevatorButton
-                value="2"
-                onClick={() =>
-                  handleFloorSelection(2)
+              <div
+                className={
+                  styles.floorButtons
                 }
-              />
+              >
+                <ElevatorButton
+                  value="3"
+                  onClick={() =>
+                    handleFloorSelection(
+                      3
+                    )
+                  }
+                />
 
-              <ElevatorButton
-                value="1"
-                onClick={() =>
-                  handleFloorSelection(1)
+                <ElevatorButton
+                  value="2"
+                  onClick={() =>
+                    handleFloorSelection(
+                      2
+                    )
+                  }
+                />
+
+                <ElevatorButton
+                  value="1"
+                  onClick={() =>
+                    handleFloorSelection(
+                      1
+                    )
+                  }
+                />
+
+                <ElevatorButton
+                  value="T"
+                  onClick={() =>
+                    handleFloorSelection(
+                      0
+                    )
+                  }
+                />
+              </div>
+
+              <div
+                className={
+                  styles.doorButtons
                 }
-              />
+              >
+                <ElevatorButton
+                  value="<|>"
+                  onClick={
+                    handleOpenDoor
+                  }
+                />
 
-              <ElevatorButton
-                value="T"
-                onClick={() =>
-                  handleFloorSelection(0)
+                <ElevatorButton
+                  value=">|<"
+                  onClick={
+                    handleCloseDoor
+                  }
+                />
+              </div>
+
+              <div
+                className={
+                  styles.statusPanel
                 }
-              />
-            </div>
+              >
+                <span>
+                  Andar Atual
+                </span>
 
-            <div
-              className={
-                styles.doorButtons
-              }
-            >
-              <ElevatorButton
-                value="<|>"
-                onClick={
-                  handleOpenDoor
+                <strong>
+                  {currentFloor === 0
+                    ? "Térreo"
+                    : `${currentFloor}º`}
+                </strong>
+              </div>
+
+              <div
+                className={
+                  styles.statusPanel
                 }
-              />
+              >
+                <span>Porta</span>
 
-              <ElevatorButton
-                value=">|<"
-                onClick={
-                  handleCloseDoor
+                <strong>
+                  {doorOpen
+                    ? "ABERTA"
+                    : "FECHADA"}
+                </strong>
+              </div>
+
+              <div
+                className={
+                  styles.statusPanel
                 }
-              />
-            </div>
+              >
+                <span>Estado</span>
 
-            <div
-              className={
-                styles.statusPanel
-              }
-            >
-              <span>
-                Andar Atual
-              </span>
-
-              <strong>
-                {currentFloor === 0
-                  ? "Térreo"
-                  : `${currentFloor}º`}
-              </strong>
-            </div>
-
-            <div
-              className={
-                styles.statusPanel
-              }
-            >
-              <span>Porta</span>
-
-              <strong>
-                {doorOpen
-                  ? "ABERTA"
-                  : "FECHADA"}
-              </strong>
-            </div>
-
-            <div
-              className={
-                styles.statusPanel
-              }
-            >
-              <span>Estado</span>
-
-              <strong>
-                {elevatorState}
-              </strong>
+                <strong>
+                  {elevatorState}
+                </strong>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

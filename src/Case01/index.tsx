@@ -1,184 +1,393 @@
 import React, { useState } from "react";
 import styles from "./styles.module.css";
+
 import Money from "./components/Money";
 import MachineButton from "./components/MachineButton";
 import Product from "./components/Product";
+
 import Header from "../common/Header";
+import Popup from "../common/Popup";
 
 const Vending_Machine: React.FC = () => {
-  const [selectedProduct, setSelectedProduct] = useState<string>("");
-  const [balance, setBalance] = useState(0);
-  const [boughtProduct, setBoughtProduct] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] =
+    useState<string>("");
+
+  const [balance, setBalance] =
+    useState(0);
+
+  const [boughtProduct, setBoughtProduct] =
+    useState<string>("");
+
+  const [popupOpen, setPopupOpen] =
+    useState(false);
+
+  const [popupTitle, setPopupTitle] =
+    useState("");
+
+  const [popupMessage, setPopupMessage] =
+    useState("");
 
   const productsList = [
-    { reference: "a", price: 6 },
-    { reference: "b", price: 7 },
-    { reference: "c", price: 8 },
+    {
+      reference: "a",
+      price: 6,
+    },
+    {
+      reference: "b",
+      price: 7,
+    },
+    {
+      reference: "c",
+      price: 8,
+    },
   ];
 
-  const products = productsList.map((product) => (
-    <div className={styles.product} key={product.reference}>
-      <Product
-        identifier={product.reference}
-        price={product.price}
-        totalMoney={balance}
-      />
-      <Product
-        identifier={product.reference}
-        price={product.price}
-        totalMoney={balance}
-      />
-      <Product
-        identifier={product.reference}
-        price={product.price}
-        totalMoney={balance}
-      />
-    </div>
-  ));
+  function showPopup(
+    title: string,
+    message: string
+  ) {
+    setPopupTitle(title);
+    setPopupMessage(message);
+    setPopupOpen(true);
+  }
 
-  const productAlert = (product: { reference: string; price: number }) => {
-    alert(
-      `Você retirou o produto ${selectedProduct.toUpperCase()}!${
-        balance === product.price
-          ? "\n\nNão há troco."
-          : `\n\nVocê recebeu R$${balance - product.price}.00 de troco.`
-      }`
+  const products =
+    productsList.map(
+      (product) => (
+        <div
+          className={styles.product}
+          key={product.reference}
+        >
+          <Product
+            identifier={
+              product.reference
+            }
+            price={product.price}
+            totalMoney={balance}
+          />
+
+          <Product
+            identifier={
+              product.reference
+            }
+            price={product.price}
+            totalMoney={balance}
+          />
+
+          <Product
+            identifier={
+              product.reference
+            }
+            price={product.price}
+            totalMoney={balance}
+          />
+        </div>
+      )
+    );
+
+  const productAlert = (
+    product: {
+      reference: string;
+      price: number;
+    }
+  ) => {
+    showPopup(
+      "Compra realizada",
+      balance === product.price
+        ? `Você retirou o produto ${selectedProduct.toUpperCase()}.\n\nNão há troco.`
+        : `Você retirou o produto ${selectedProduct.toUpperCase()}.\n\nTroco: R$${balance - product.price}.00`
     );
   };
 
-  const handleProductClick = (product: {
-    reference: string;
-    price: number;
-  }) => {
-    if (balance >= product.price) {
-      setSelectedProduct(product.reference);
+  const handleProductClick = (
+    product: {
+      reference: string;
+      price: number;
+    }
+  ) => {
+    if (
+      balance >= product.price
+    ) {
+      setSelectedProduct(
+        product.reference
+      );
+
       setBoughtProduct("");
     } else {
-      alert(
-        `Seu saldo é insuficiente para selecionar o produto ${product.reference.toUpperCase()}.`
+      showPopup(
+        "Saldo insuficiente",
+        `Você precisa de pelo menos R$${product.price}.00 para selecionar o produto ${product.reference.toUpperCase()}.`
       );
     }
   };
 
-  const handleMoneyClick = (value: number) => {
+  const handleMoneyClick = (
+    value: number
+  ) => {
     setBoughtProduct("");
 
     if (balance < 30) {
-      setBalance((prev) => prev + value);
+      setBalance(
+        (prev) => prev + value
+      );
     } else {
-      alert("Seu limite de crédito é R$30.");
+      showPopup(
+        "Limite atingido",
+        "O limite máximo de crédito da máquina é R$30.00."
+      );
     }
   };
 
-  const handleExtractionClick = () => {
-    const selected = productsList.find(
-      (product) => product.reference === selectedProduct
-    );
+  const handleExtractionClick =
+    () => {
+      const selected =
+        productsList.find(
+          (product) =>
+            product.reference ===
+            selectedProduct
+        );
 
-    if (!selected) {
-      alert("Selecione um produto primeiro.");
-      return;
-    }
+      if (!selected) {
+        showPopup(
+          "Nenhum produto selecionado",
+          "Selecione um produto antes de realizar a retirada."
+        );
 
-    if (balance < selected.price) {
-      alert("Saldo insuficiente.");
-      return;
-    }
+        return;
+      }
 
-    productAlert(selected);
+      if (
+        balance < selected.price
+      ) {
+        showPopup(
+          "Saldo insuficiente",
+          `Você precisa de R$${selected.price}.00 para retirar este produto.`
+        );
 
-    setBalance(0);
-    setBoughtProduct(selected.reference);
-    setSelectedProduct("");
-  };
+        return;
+      }
+
+      productAlert(selected);
+
+      setBalance(0);
+
+      setBoughtProduct(
+        selected.reference
+      );
+
+      setSelectedProduct("");
+    };
 
   return (
-    <section id={styles.vendingMachine}>
-      <Header />
+    <>
+      <Popup
+        isOpen={popupOpen}
+        title={popupTitle}
+        message={popupMessage}
+        onClose={() =>
+          setPopupOpen(false)
+        }
+      />
 
-      <div id={styles.machineBody}>
-        <div className={styles.machineHeader}>
-          <h1>Automata Vending Machine</h1>
-          <p>Simulação de Autômato Finito</p>
-        </div>
+      <section
+        id={styles.vendingMachine}
+      >
+        <Header />
 
-        <section id={styles.machineUpperPart}>
-          <div id={styles.machineGlass}>{products}</div>
+        <div id={styles.machineBody}>
+          <div
+            className={
+              styles.machineHeader
+            }
+          >
+            <h1>
+              Automata Vending
+              Machine
+            </h1>
 
-          <div id={styles.machineControls}>
-            <div id={styles.machineInstructions}>
-              <span>Painel de Controle</span>
-            </div>
-
-            <div id={styles.buttonsArea}>
-              <MachineButton
-                value="a"
-                onClick={() => handleProductClick(productsList[0])}
-              />
-              <MachineButton
-                value="b"
-                onClick={() => handleProductClick(productsList[1])}
-              />
-              <MachineButton
-                value="c"
-                onClick={() => handleProductClick(productsList[2])}
-              />
-            </div>
-
-            <span id={styles.balance}>
-              SALDO:
-              <strong> R$ {balance}.00</strong>
-            </span>
-
-            <span id={styles.selectedProduct}>
-              {selectedProduct ? (
-                <>
-                  <p>
-                    Produto: <strong>{selectedProduct.toUpperCase()}</strong>
-                  </p>
-
-                  <p>
-                    Valor: R$
-                    {
-                      productsList.find(
-                        (p) => p.reference === selectedProduct
-                      )?.price
-                    }
-                    .00
-                  </p>
-                </>
-              ) : (
-                <p>Nenhum produto selecionado</p>
-              )}
-            </span>
-
-            <button
-              id={styles.extraction}
-              onClick={handleExtractionClick}
-            >
-              Retirar Produto
-            </button>
+            <p>
+              Simulação de
+              Autômato Finito
+            </p>
           </div>
-        </section>
 
-        <div id={styles.evacuation}>
-          {boughtProduct && (
-            <img
-              id={styles.boughtProduct}
-              src={`/assets/produtos/produto_${boughtProduct}.png`}
-              alt="Produto comprado"
-              onClick={() => setBoughtProduct("")}
-            />
-          )}
+          <section
+            id={
+              styles.machineUpperPart
+            }
+          >
+            <div
+              id={
+                styles.machineGlass
+              }
+            >
+              {products}
+            </div>
+
+            <div
+              id={
+                styles.machineControls
+              }
+            >
+              <div
+                id={
+                  styles.machineInstructions
+                }
+              >
+                <span>
+                  Painel de
+                  Controle
+                </span>
+              </div>
+
+              <div
+                id={
+                  styles.buttonsArea
+                }
+              >
+                <MachineButton
+                  value="a"
+                  onClick={() =>
+                    handleProductClick(
+                      productsList[0]
+                    )
+                  }
+                />
+
+                <MachineButton
+                  value="b"
+                  onClick={() =>
+                    handleProductClick(
+                      productsList[1]
+                    )
+                  }
+                />
+
+                <MachineButton
+                  value="c"
+                  onClick={() =>
+                    handleProductClick(
+                      productsList[2]
+                    )
+                  }
+                />
+              </div>
+
+              <span
+                id={styles.balance}
+              >
+                SALDO:
+                <strong>
+                  {" "}
+                  R$
+                  {balance}
+                  .00
+                </strong>
+              </span>
+
+              <span
+                id={
+                  styles.selectedProduct
+                }
+              >
+                {selectedProduct ? (
+                  <>
+                    <p>
+                      Produto:
+                      <strong>
+                        {" "}
+                        {selectedProduct.toUpperCase()}
+                      </strong>
+                    </p>
+
+                    <p>
+                      Valor:
+                      {" "}
+                      R$
+                      {
+                        productsList.find(
+                          (
+                            product
+                          ) =>
+                            product.reference ===
+                            selectedProduct
+                        )
+                          ?.price
+                      }
+                      .00
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    Nenhum
+                    produto
+                    selecionado
+                  </p>
+                )}
+              </span>
+
+              <button
+                id={
+                  styles.extraction
+                }
+                onClick={
+                  handleExtractionClick
+                }
+              >
+                Retirar
+                Produto
+              </button>
+            </div>
+          </section>
+
+          <div
+            id={
+              styles.evacuation
+            }
+          >
+            {boughtProduct && (
+              <img
+                id={
+                  styles.boughtProduct
+                }
+                src={`/assets/produtos/produto_${boughtProduct}.png`}
+                alt="Produto comprado"
+                onClick={() =>
+                  setBoughtProduct(
+                    ""
+                  )
+                }
+              />
+            )}
+          </div>
         </div>
-      </div>
 
-      <section id={styles.moneyBills}>
-        <Money value={1} onClick={() => handleMoneyClick(1)} />
-        <Money value={2} onClick={() => handleMoneyClick(2)} />
-        <Money value={5} onClick={() => handleMoneyClick(5)} />
+        <section
+          id={styles.moneyBills}
+        >
+          <Money
+            value={1}
+            onClick={() =>
+              handleMoneyClick(1)
+            }
+          />
+
+          <Money
+            value={2}
+            onClick={() =>
+              handleMoneyClick(2)
+            }
+          />
+
+          <Money
+            value={5}
+            onClick={() =>
+              handleMoneyClick(5)
+            }
+          />
+        </section>
       </section>
-    </section>
+    </>
   );
 };
 
