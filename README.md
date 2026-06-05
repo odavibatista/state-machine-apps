@@ -47,7 +47,7 @@ A lógica implementada pode ser modelada como um **Autômato Finito Determiníst
 
 A figura abaixo representa o diagrama de estados utilizado para modelar o funcionamento da máquina de doces.
 
-![Estrutura lógica da máquina de doces](image-1.png)
+![Estrutura lógica da máquina de doces](./public/docs/image-1.png)
 
 ---
 
@@ -71,7 +71,7 @@ O sistema contempla:
 
 A figura abaixo representa o desenho conceitual originalmente utilizado para o desenvolvimento da interface.
 
-![Mockup da máquina de doces](image.png)
+![Mockup da máquina de doces](./public/docs/image.png)
 
 ---
 
@@ -115,7 +115,7 @@ Entre as operações disponíveis estão:
 
 A imagem abaixo representa a estrutura conceitual utilizada para a modelagem do sistema.
 
-![Representação do elevador](image-2.png)
+![Representação do elevador](./public/docs/image-2.png)
 
 ---
 
@@ -123,7 +123,7 @@ A imagem abaixo representa a estrutura conceitual utilizada para a modelagem do 
 
 A figura abaixo apresenta o diagrama de estados utilizado como base para a implementação do simulador.
 
-![Estrutura lógica do elevador](image-3.png)
+![Estrutura lógica do elevador](./public/docs/image-3.png)
 
 O modelo contempla:
 
